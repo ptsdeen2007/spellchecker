@@ -12,5 +12,13 @@ class TypingStarted extends TypingEvent{
   @override
   // TODO: implement props
   List<Object> get props => [text];
+}
 
+class TypingWordSelected extends TypingEvent{
+  String text;
+  TypingWordSelected(this.text);
+
+  @override
+  // TODO: implement props
+  List<Object> get props => [text];
 }

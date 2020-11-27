@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:dictionary/Bloc/search/search_event.dart';
+import 'package:dictionary/model/DefinitionM.dart';
 import 'package:dictionary/repositories/dictionary_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:rxdart/rxdart.dart';
@@ -16,36 +16,49 @@ class TypingBloc extends Bloc<TypingEvent, TypingState> {
   @override
   Stream<TypingState> mapEventToState(TypingEvent event,) async* {
     if(event is TypingStarted){
-      if(event.text.length<3){
+      //to clear the word suggestion of word definition if search box is empty
+      if(event.text.length<1){
         yield TypingResult([]);
       }else{
         try {
-          List<String> suggestions=await DictionaryRepository().getWordSuggestions(event.text);
-          /* List<String> suggestions;
-          if(searchQuery=="this"){
-             suggestions=[];
-          }else{
-            suggestions=['this','thisis','thatis'];
-          }*/
+          String searchQuery=event.text;
+
+          //to get suggestions from repository
+          List<String> suggestions=await DictionaryRepository().getWordSuggestions(searchQuery);
+
+          //suggestion length > meanse word is misspelled
           if(suggestions.length>0){
             yield TypingResult(suggestions);
           }else{
-            yield TypingResult([]);
+            //to find the definition from repository for correct word
+            DefinitionM definitionM=await DictionaryRepository().getWordDefinition(searchQuery);
+            yield TypingDefinition(definitionM);
           }
         } catch (e) {
           yield TypingResult([]);
         }
       }
+      //TypingWordSelected event used to get data immediately without debouching
+    }else if(event is TypingWordSelected){
+      yield TypingProgress();
+      String searchQuery=event.text;
+      DefinitionM definitionM=await DictionaryRepository().getWordDefinition(searchQuery);
+      yield TypingDefinition(definitionM);
     }
   }
 
   @override
   Stream<Transition<TypingEvent, TypingState>> transformEvents(
       Stream<TypingEvent> events, transitionFn) {
-    return events
-        // .where((event) =>(event is TypingStarted) && event.text.length>3)
-        .debounceTime(const Duration(milliseconds: 500))
-        .switchMap((transitionFn));
+      if(events is TypingStarted){
+        //adding 500 millisecond gap for each request when user typing his words to avoid unnecessary request
+        return events
+            .debounceTime(const Duration(milliseconds: 500))
+            .switchMap((transitionFn));
+      }else{
+        //override debounce for other events
+        return events.switchMap(transitionFn);
+      }
   }
 
 }

@@ -1,9 +1,6 @@
-import 'package:dictionary/Bloc/search/search_bloc.dart';
-import 'package:dictionary/ui/widget/speech_button.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
 
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'ui/land_screen.dart';
 
 void main() {
@@ -24,16 +21,7 @@ class MyApp extends StatelessWidget {
             Theme.of(context).textTheme,
           )
       ),
-     /* home: BlocProvider(
-       create: (_)=>SearchBloc(),
-        child: LandScreen(),
-      ),*/
-      home: MultiBlocProvider(
-        providers: [
-          BlocProvider(create: (context)=>SearchBloc())
-        ],
-        child: LandScreen(),
-      ),
+      home: LandScreen(),
       // home: SpeechButton(),
     );
   }

@@ -35,8 +35,11 @@ class DictionaryApiClient {
    }else{
     ErrorM errorM= errorMFromJson(response.body);
     if(errorM.spellingErrorCount==0){
+      //if error count is 0 then suggetion list will be null
+      //to avoid null returning empty list
       return List();
     }else{
+      //suggestions list not empty
       return errorM.elements.first.errors.first.suggestions;
     }
    }

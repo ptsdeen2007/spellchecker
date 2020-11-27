@@ -21,7 +21,7 @@ class EntryWidget extends StatelessWidget {
         ListView.builder(
           shrinkWrap: true,
           physics: ScrollPhysics(),
-          itemCount: entry.pronunciations.length,
+          itemCount: entry.pronunciations?.length??0,
           itemBuilder: (context, position) {
             return  PronounciationWidget(entry.pronunciations[position]);
             // return Text("Pro count");

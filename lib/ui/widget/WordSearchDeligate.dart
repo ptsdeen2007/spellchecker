@@ -1,4 +1,6 @@
 import 'package:dictionary/Bloc/typing/typing_bloc.dart';
+import 'package:dictionary/model/DefinitionM.dart';
+import 'package:dictionary/ui/widget/DefinitionWidget.dart';
 import 'package:dictionary/ui/widget/speech_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,9 +18,6 @@ class WordSearchDeligate extends SearchDelegate {
           query = text;
         },
       ),
-      IconButton(icon: Icon(Icons.search), onPressed: () {
-        Navigator.pop(context,query);
-      }),
     ];
   }
 
@@ -38,24 +37,41 @@ class WordSearchDeligate extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    print(query);
+    //passing new query event
     bloc.add(TypingStarted(query));
+
+
     return StreamBuilder<TypingState>(
         stream: bloc.asBroadcastStream(),
         builder: (context, snapShot) {
           if (snapShot.hasData) {
-            List<String> items = (snapShot.data as TypingResult).listItems;
-            return ListView.builder(
-                itemCount: items.length,
-                itemBuilder: (context, postion) {
-                  var item = items[postion];
-                  return ListTile(
-                    onTap: (){
-                      Navigator.pop(context,item);
-                    },
-                    title: Text(item),
-                  );
-                });
+
+            //for misspelled word suggestions will came here
+            if (snapShot.data is TypingResult) {
+              List<String> items = (snapShot.data as TypingResult).listItems;
+              print("Snap ${items}");
+              return ListView.builder(
+                  itemCount: items.length,
+                  itemBuilder: (context, postion) {
+                    var item = items[postion];
+                    return ListTile(
+                      onTap: () {
+                        bloc.add(TypingWordSelected(item));
+                      },
+                      title: Text(item),
+                    );
+                  });
+            }
+            //for correct spelled word, word definition will came here
+            else if (snapShot.data is TypingDefinition) {
+              DefinitionM definitionM =
+                  (snapShot.data as TypingDefinition).definitionM;
+              return DefinitionWidget(definitionM: definitionM);
+            }else if(snapShot.data is TypingProgress){
+              return Center(
+                child: Text("Please Waite"),
+              );
+            }
           }
           return Container();
         });

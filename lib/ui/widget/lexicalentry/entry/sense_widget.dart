@@ -18,7 +18,6 @@ class SenseWidget extends StatelessWidget {
       children: [
         DetailArray(sense.definitions,textStyle: TextStyle(fontWeight: FontWeight.bold),),
         ExampleWidget(sense.examples),
-        // DetailArray(sense.shortDefinitions),
         sense is Sense? SubSenseWidget(sense.subsenses):Container(),
       ],
     );

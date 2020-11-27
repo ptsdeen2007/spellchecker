@@ -19,3 +19,21 @@ class TypingResult extends TypingState{
   List<Object> get props => [listItems];
 
 }
+
+class TypingDefinition extends TypingState{
+  DefinitionM definitionM;
+
+
+  TypingDefinition(this.definitionM);
+
+  @override
+  // TODO: implement props
+  List<Object> get props => [definitionM];
+}
+
+class TypingProgress extends TypingState{
+
+  @override
+  // TODO: implement props
+  List<Object> get props => [];
+}
