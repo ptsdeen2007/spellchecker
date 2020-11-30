@@ -24,26 +24,35 @@ class DictionaryApiClient {
       "https://jspell-checker.p.rapidapi.com/check",
       body:jsonEncode(body2) ,
       headers: {
-        "x-rapidapi-key": "2fbb3660eamsh6f7c900cb6060aap1d2eb6jsna112a647b126",
+        // "x-rapidapi-key": "2fbb3660eamsh6f7c900cb6060aap1d2eb6jsna112a647b126",//from 2007
+        "x-rapidapi-key": "dfd48a200dmsh75d014c176aa9ecp199051jsn94b6d5b7b787",//from 2009
+        // "x-rapidapi-key": "2c6f4196b8msh9b8c9fd6664925fp177cdcjsn293edc67887c",//from dev
         "x-rapidapi-host": "jspell-checker.p.rapidapi.com",
         "useQueryString": "true"
       }
+
     );
    // print("response from server ${response.body}");
    if(response.statusCode!=200){
+     print(response.body);
      throw Exception(response.body);
    }else{
     ErrorM errorM= errorMFromJson(response.body);
     if(errorM.spellingErrorCount==0){
-      //if error count is 0 then suggetion list will be null
-      //to avoid null returning empty list
       return List();
     }else{
-      //suggestions list not empty
-      return errorM.elements.first.errors.first.suggestions;
+      var suggestions = errorM.elements.first.errors.first.suggestions;
+      if(suggestions.isEmpty){
+        return [query];
+      }else{
+        return suggestions;
+      }
+
+
     }
    }
   }
+
 
   Future<DefinitionM> fetchWordDefinition(String word) async {
     String url="https://od-api.oxforddictionaries.com/api/v2/entries/en-gb/${word.toLowerCase()}";
@@ -51,11 +60,6 @@ class DictionaryApiClient {
       "app_id":"401c9bb9",
       "app_key":"faecb5877dbaaaf8fb3f837fd8533495"
     });
-   print(response.body);
-   if(response.statusCode!=200){
-     throw Exception(response.body);
-   }else{
     return definitionMFromJson(response.body);
-   }
   }
 }

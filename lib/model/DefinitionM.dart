@@ -14,18 +14,21 @@ class DefinitionM {
     this.metadata,
     this.results,
     this.word,
+    this.error
   });
 
   String id;
   Metadata metadata;
   List<Result> results;
   String word;
+  String error;
 
   factory DefinitionM.fromJson(Map<String, dynamic> json) => DefinitionM(
     id: json["id"] == null ? null : json["id"],
     metadata: json["metadata"] == null ? null : Metadata.fromJson(json["metadata"]),
     results: json["results"] == null ? null : List<Result>.from(json["results"].map((x) => Result.fromJson(x))),
     word: json["word"] == null ? null : json["word"],
+    error: json["error"] == null ? null : json["error"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -33,6 +36,7 @@ class DefinitionM {
     "metadata": metadata == null ? null : metadata.toJson(),
     "results": results == null ? null : List<dynamic>.from(results.map((x) => x.toJson())),
     "word": word == null ? null : word,
+    "error": error == null ? null : error,
   };
 }
 

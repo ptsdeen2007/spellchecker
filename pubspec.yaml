@@ -23,13 +23,26 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
+    #for clean arcitecture
   flutter_bloc: ^6.1.1
+
+  #to campare objects
   equatable: ^1.2.3
+
+  #for network call
   http: ^0.12.2
+
+  #to use google fonts wihout adding in assets
   google_fonts: ^1.1.1
+
+  #to play audio file
   assets_audio_player: ^2.0.13
-  numerus: ^1.0.3
+
+  #to add debouncing
   rxdart: ^0.24.1
+
+  #to convert voice to text
   speech_to_text: ^3.0.1
 
 

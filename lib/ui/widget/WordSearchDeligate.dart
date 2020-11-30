@@ -40,12 +40,10 @@ class WordSearchDeligate extends SearchDelegate {
     //passing new query event
     bloc.add(TypingStarted(query));
 
-
     return StreamBuilder<TypingState>(
         stream: bloc.asBroadcastStream(),
         builder: (context, snapShot) {
           if (snapShot.hasData) {
-
             //for misspelled word suggestions will came here
             if (snapShot.data is TypingResult) {
               List<String> items = (snapShot.data as TypingResult).listItems;
@@ -67,9 +65,16 @@ class WordSearchDeligate extends SearchDelegate {
               DefinitionM definitionM =
                   (snapShot.data as TypingDefinition).definitionM;
               return DefinitionWidget(definitionM: definitionM);
-            }else if(snapShot.data is TypingProgress){
+            } else if (snapShot.data is TypingProgress) {
               return Center(
-                child: Text("Please Waite"),
+                child: Text("Please Wait"),
+              );
+            } else if (snapShot.data is TypingError) {
+              return Center(
+                child: Padding(
+                  padding:EdgeInsets.all(8),
+                  child: Text((snapShot.data as TypingError).message)
+                ),
               );
             }
           }

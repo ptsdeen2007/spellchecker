@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:numerus/numerus.dart';
 class DetailArray extends StatelessWidget {
   List<String> dataList;
   TextStyle textStyle;

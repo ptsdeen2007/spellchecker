@@ -37,3 +37,13 @@ class TypingProgress extends TypingState{
   // TODO: implement props
   List<Object> get props => [];
 }
+
+class TypingError extends TypingState{
+  String message;
+
+  TypingError(this.message);
+
+  @override
+  // TODO: implement props
+  List<Object> get props => [message];
+}

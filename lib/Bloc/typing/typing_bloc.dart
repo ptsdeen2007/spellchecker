@@ -12,7 +12,7 @@ part 'typing_state.dart';
 
 class TypingBloc extends Bloc<TypingEvent, TypingState> {
   TypingBloc() : super(TypingInitial());
-
+//if the word is not there show the word
   @override
   Stream<TypingState> mapEventToState(TypingEvent event,) async* {
     if(event is TypingStarted){
@@ -30,9 +30,7 @@ class TypingBloc extends Bloc<TypingEvent, TypingState> {
           if(suggestions.length>0){
             yield TypingResult(suggestions);
           }else{
-            //to find the definition from repository for correct word
-            DefinitionM definitionM=await DictionaryRepository().getWordDefinition(searchQuery);
-            yield TypingDefinition(definitionM);
+            yield await showResult(searchQuery);
           }
         } catch (e) {
           yield TypingResult([]);
@@ -42,8 +40,7 @@ class TypingBloc extends Bloc<TypingEvent, TypingState> {
     }else if(event is TypingWordSelected){
       yield TypingProgress();
       String searchQuery=event.text;
-      DefinitionM definitionM=await DictionaryRepository().getWordDefinition(searchQuery);
-      yield TypingDefinition(definitionM);
+      yield await showResult(searchQuery);
     }
   }
 
@@ -59,6 +56,18 @@ class TypingBloc extends Bloc<TypingEvent, TypingState> {
         //override debounce for other events
         return events.switchMap(transitionFn);
       }
+  }
+
+  Future<TypingState> showResult(String searchQuery) async{
+    DefinitionM definitionM=await DictionaryRepository().getWordDefinition(searchQuery);
+
+    if(definitionM.error==null){
+      //word definition found
+      return TypingDefinition(definitionM);
+    }else{
+      //word definition not found
+      return TypingError(definitionM.error);
+    }
   }
 
 }
